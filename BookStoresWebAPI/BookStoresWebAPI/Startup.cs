@@ -1,4 +1,6 @@
+using BookStoresWebAPI.Handlers;
 using BookStoresWebAPI.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,6 +35,8 @@ namespace BookStoresWebAPI
             services.AddMvc(option => option.EnableEndpointRouting = false)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+            services.AddAuthentication("BasicAuthentication")
+                    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
             services.AddDbContext<BookStoresDBContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("BookStoresDB"))
