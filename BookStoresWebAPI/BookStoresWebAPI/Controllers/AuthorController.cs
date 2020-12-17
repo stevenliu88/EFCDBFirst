@@ -15,20 +15,22 @@ namespace BookStoresWebAPI.Controllers
         [HttpGet]
         public IEnumerable<Author> Get() 
         {
-            using (var context = new BookStoresDBContext()) 
-            {
-                return context.Author.ToArray();   
-            }
+            //using (var context = new BookStoresDBContext()) 
+            //{
+            //    return context.Authors.ToArray();   
+            //}
+            return null;
         }
 
         [HttpGet("{id}")]
         public IActionResult GetAuthor(int id) 
         {
-            using (var context = new BookStoresDBContext()) 
-            {
-                var author = context.Author.FirstOrDefault(a => a.AuthorId == id);
-                return Ok(author);
-            }
+            //using (var context = new BookStoresDBContext()) 
+            //{
+            //    var author = context.Authors.FirstOrDefault(a => a.AuthorId == id);
+            //    return Ok(author);
+            //}
+            return null;
         }
 
     }
