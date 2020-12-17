@@ -24,21 +24,39 @@ namespace BookStoresWebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Publisher>>> GetPublisher()
         {
-            return await _context.Publishers.ToListAsync();
+            return await _context.Publishers.Include(pub => pub.Users).ToListAsync();
         }
 
         // GET: api/Publishers/5
         [HttpGet("GetPublisherDetail/{id}")]
-        public ActionResult<Publisher> GetPublisherDetail(int id)
+        public async Task<ActionResult<Publisher>> GetPublisherDetail(int id)
         {
-            //var publisher = await _context.Publishers.FindAsync(id);
-            var publisher = _context.Publishers
-                                    .Include(pub => pub.Books)
-                                        .ThenInclude(book => book.Sales)
-                                    .Include(pub => pub.Users)
-                                        .ThenInclude(user => user.Job)
-                                    .Where(p => p.PubId == id)
-                                    .FirstOrDefault();
+            // eager loading
+            //var publisher = _context.Publishers
+            //                        .Include(pub => pub.Books)
+            //                            .ThenInclude(book => book.Sales)
+            //                        .Include(pub => pub.Users)
+            //                            .ThenInclude(user => user.Job)
+            //                        .Where(p => p.PubId == id)
+            //                        .FirstOrDefault();
+
+            // Explicit Loading
+
+            var publisher = await _context.Publishers.SingleAsync(pub => pub.PubId == id);
+
+            _context.Entry(publisher)
+                    .Collection(pub => pub.Users)
+                    .Query()
+                    .Where(usr => usr.FirstName.Equals("Mary"))
+                    .Load();
+            _context.Entry(publisher)
+                    .Collection(pub => pub.Books)
+                    .Query()
+                    .Include(book => book.Sales)
+                    .Load();
+
+
+
 
             if (publisher == null)
             {
